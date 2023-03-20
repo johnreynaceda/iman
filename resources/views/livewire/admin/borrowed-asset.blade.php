@@ -93,10 +93,11 @@
       <div>
         <div class="mt-6 flow-root">
           <ul role="list" class="-my-5 divide-y divide-gray-200">
+
             @foreach ($requested_asset as $key => $item)
-              <li wire:key="{{ $item }}" class="py-4">
-                <div class="flex items-center space-x-4">
-                  <div class="flex-shrink-0">
+              <li wire:key="{{ $item }}" class="py-4 ">
+                <div class="flex items-center space-x-4 bg-gray-100 x-animate rounded-lg">
+                  <div class="flex-shrink-0 pl-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                       <path fill="none" d="M0 0h24v24H0z" />
                       <path
@@ -107,9 +108,9 @@
                     <p class="truncate text-sm font-medium text-gray-700 uppercase">{{ $item->asset->name }}</p>
                     <p class="truncate text-sm text-gray-500">{{ $item->asset->serial_number }}</p>
                   </div>
-                  <div>
-                    <x-native-select label="Select New Remarks" wire:model="new_remarks.{{ $item->id }}">
-
+                  <div class="p-2 flex flex-col space-y-1">
+                    <x-native-select wire:model="new_remarks.{{ $asset->id }}">
+                      <option selected hidden>Select Remarks</option>
                       <option value="1">Brand New</option>
                       <option value="2">Functional</option>
                       <option value="3">Unfunctional</option>
@@ -117,6 +118,11 @@
                       <option value="5">Damage</option>
                       <option value="6">Lost</option>
                     </x-native-select>
+                    @isset($new_remarks[$asset->id])
+                      @if ($new_remarks[$asset->id] == 5 || $new_remarks[$asset->id] == 6 || $new_remarks[$asset->id] == 4)
+                        <x-input label="Remarks" wire:model="damage_remarks.{{ $asset->id }}" />
+                      @endif
+                    @endisset
                   </div>
                 </div>
               </li>

@@ -85,24 +85,18 @@ class BorrowedAsset extends Component implements Tables\Contracts\HasTable
                     return $record->user->employeeInformation->firstname .
                         ' ' .
                         $record->user->employeeInformation->lastname;
-                })
-                ->searchable()
-                ->sortable(),
+                }),
 
             TextColumn::make('user_id')
                 ->label('PHONE NUMBER')
                 ->formatStateUsing(function ($record) {
                     return $record->user->employeeInformation->contact;
-                })
-                ->searchable()
-                ->sortable(),
+                }),
             TextColumn::make('requested_assets.item')
                 ->label('REQUESTED ITEM')
                 ->formatStateUsing(function ($record) {
                     return $record->requestedAssets->count() . ' Asset(s)';
-                })
-                ->searchable()
-                ->sortable(),
+                }),
             BadgeColumn::make('status')
                 ->label('STATUS')
                 ->enum([
@@ -247,10 +241,22 @@ class BorrowedAsset extends Component implements Tables\Contracts\HasTable
         $updated = AssetModel::whereIn('id', $assets)->get();
 
         foreach ($updated as $asset) {
-            $asset->update([
-                'remarks' => $this->new_remarks[$asset->id],
-                'status' => 1,
-            ]);
+            if (
+                $this->new_remarks[$asset->id] == 4 ||
+                $this->new_remarks[$asset->id] == 5 ||
+                $this->new_remarks[$asset->id] == 6
+            ) {
+                $asset->update([
+                    'remarks' => $this->new_remarks[$asset->id],
+                    'reason' => $this->damage_remarks[$asset->id],
+                    'status' => 1,
+                ]);
+            } else {
+                $asset->update([
+                    'remarks' => $this->new_remarks[$asset->id],
+                    'status' => 1,
+                ]);
+            }
         }
         $this->return_modal = false;
         $this->dialog()->success(
